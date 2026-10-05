@@ -1,0 +1,65 @@
+<?php $square = $admin['square']; ?>
+<div class="d-flex justify-content-between align-items-center py-3 mb-4">
+    <h4 class="mb-0">
+        <span class="text-muted fw-light">Services /</span> Square
+    </h4>
+    <button type="submit" form="settings-form" class="btn btn-primary">
+        <i class="bx bx-save me-1"></i> Save Settings
+    </button>
+</div>
+
+<?php if ($admin['flash'] ?? null): ?>
+    <div class="alert alert-<?= \htmlspecialchars($admin['flash']['type']) ?> alert-dismissible fade show" role="alert">
+        <?= \htmlspecialchars($admin['flash']['text']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="alert alert-info">
+            <i class="bx bx-info-circle me-1"></i>
+            To take payments with Square, also choose <strong>Square</strong> as the Active Checkout Provider in
+            <a href="<?= $admin['basePath'] ?>settings/payments/">Settings &gt; Payments</a>.
+        </div>
+
+        <form method="POST" action="<?= $admin['basePath'] ?>settings/square/" id="settings-form" autocomplete="off">
+            <input type="hidden" name="token" value="<?= $template['formToken'] ?? '' ?>">
+            <div class="card mb-4">
+                <div class="card-header"><h5 class="mb-0"><i class="bx bx-credit-card-front me-2"></i>Square</h5></div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enabled" name="enabled" <?= $square['enabled'] ? 'checked' : '' ?>>
+                            <label class="form-check-label fw-semibold" for="enabled">Enable Square</label>
+                        </div>
+                        <div class="form-text">Switches Square on for checkout. The card form stays on your own page; customers are never sent to Square.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mode" class="form-label fw-semibold">Square Mode</label>
+                        <select class="form-select" id="mode" name="mode">
+                            <option value="test" <?= $square['mode'] === 'test' ? 'selected' : '' ?>>Sandbox</option>
+                            <option value="live" <?= $square['mode'] === 'live' ? 'selected' : '' ?>>Production</option>
+                        </select>
+                    </div>
+
+                    <?php foreach ($square['fields'] as $name => $field): ?>
+                        <div class="mb-3">
+                            <label for="<?= $name ?>" class="form-label fw-semibold"><?= \htmlspecialchars($field['label']) ?></label>
+                            <?php if ($field['secret']): ?>
+                                <input type="password" class="form-control" id="<?= $name ?>" name="<?= $name ?>" autocomplete="new-password"
+                                    placeholder="<?= $field['has'] ? 'Leave blank to keep current' : 'Not set' ?>">
+                            <?php else: ?>
+                                <input type="text" class="form-control" id="<?= $name ?>" name="<?= $name ?>" autocomplete="off"
+                                    value="<?= \htmlspecialchars($field['value']) ?>">
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <div class="form-text">Find all of these in the Square Developer Console: the Application ID and Access Token on the application's Credentials page, the Location ID under Locations. Sandbox and Production values are separate and not interchangeable.</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

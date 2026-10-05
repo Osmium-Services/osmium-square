@@ -1,0 +1,74 @@
+{
+    "id": "square",
+    "name": "Square",
+    "version": "1.0.0",
+    "description": "Takes card payments at checkout through Square (Web Payments SDK card form on your own page, charged server-side with the CreatePayment API). Appears as a payment provider in Settings > Payments",
+    "category": "payments",
+    "author": {
+        "name": "Gavin Cox"
+    },
+    "license": "proprietary",
+
+    "requires": {
+        "osmium": ">=1.0.0",
+        "php": ">=8.1",
+        "services": []
+    },
+
+    "autoload": [
+        "models"
+    ],
+
+    "hooks": {
+        "payment.providers": [
+            "Osmium\\Services\\Square\\Models\\SquarePaymentProvider::provider"
+        ],
+        "payment.create": [
+            "Osmium\\Services\\Square\\Models\\SquarePaymentProvider::create"
+        ],
+        "payment.confirm": [
+            "Osmium\\Services\\Square\\Models\\SquarePaymentProvider::confirm"
+        ]
+    },
+
+    "csp": {
+        "script-src": ["https://web.squarecdn.com", "https://sandbox.web.squarecdn.com"],
+        "frame-src": ["https://web.squarecdn.com", "https://sandbox.web.squarecdn.com"],
+        "connect-src": ["https://pci-connect.squareup.com", "https://pci-connect.squareupsandbox.com"]
+    },
+
+    "admin": {
+        "menu": {
+            "section": "Content",
+            "items": [
+                {
+                    "id": "square",
+                    "label": "Square",
+                    "icon": "bx bx-credit-card",
+                    "route": "admin/settings/square",
+                    "activePattern": "admin/settings/square",
+                    "role": null
+                }
+            ]
+        },
+        "routes": {
+            "admin/settings/square": {
+                "controller": "controllers/SquareController.php",
+                "class": "Osmium\\Services\\Square\\Controllers\\SquareController",
+                "method": "index",
+                "title": "Square"
+            }
+        }
+    },
+
+    "api": {
+        "routes": {
+            "api/checkout-square-charge": "controllers/square-charge.php"
+        }
+    },
+
+    "setup": {
+        "requiresConnection": true,
+        "postInstallNote": "Square is off until configured. Enter the Application ID, Access Token and Location ID from the Square Developer Console on the Square settings page, then choose Square as the Active Checkout Provider in Settings > Payments. The checkout page's card form must tokenize the card with the Square Web Payments SDK and POST the token to /api/checkout-square-charge before calling the normal order confirmation."
+    }
+}
