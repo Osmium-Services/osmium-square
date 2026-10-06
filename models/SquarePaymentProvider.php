@@ -61,7 +61,7 @@ class SquarePaymentProvider
         $_SESSION[self::SESSION_KEY] = [
             'ref' => $ref,
             'amount_minor' => SquareClient::toMinorUnits((float)$order['total_inc_tax']),
-            'currency' => (string)($order['currency'] ?? 'GBP'),
+            'currency' => (string)$order['currency'],
             'email' => (string)($order['customer_email'] ?? ''),
             'payment_id' => null,
         ];
