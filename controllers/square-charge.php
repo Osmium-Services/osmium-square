@@ -1,11 +1,18 @@
 <?php
 
+use Osmium\Core\Library\PaymentProviders;
+use Osmium\Modules\Checkout\Models\CheckoutOrder;
+use Osmium\Modules\Checkout\Services\CheckoutOrderPaymentState;
 use Osmium\Modules\Checkout\Services\ShopPaymentException;
 use Osmium\Services\Square\Models\SquareConfig;
+use Osmium\Services\Square\Models\SquareClient;
 use Osmium\Services\Square\Models\SquareDeclinedException;
 use Osmium\Services\Square\Models\SquarePaymentProvider;
 
 require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
+require_once __DIR__ . '/../../../modules/checkout/services/CheckoutOrderPaymentState.php';
+require_once __DIR__ . '/../../../modules/checkout/models/CheckoutModel.php';
+require_once __DIR__ . '/../../../modules/checkout/models/CheckoutOrder.php';
 
 /**
  * Square charge route.
@@ -33,6 +40,24 @@ $pending = $_SESSION[SquarePaymentProvider::SESSION_KEY] ?? null;
 
 $noPending = !\is_array($pending);
 if ($noPending) $this->osmium->jsonError('We could not find your order. Please contact us before trying again.');
+
+// Square must still be the provider admin selected: the charge route is reachable whatever is selected now
+$selectedProvider = PaymentProviders::configured($this->osmium->config->checkout, PaymentProviders::external($this->osmium));
+$squareNotSelected = $selectedProvider !== SquarePaymentProvider::ID;
+if ($squareNotSelected) $this->osmium->jsonError('Card payment is not available at the moment. Please contact us and we will help.');
+
+// The session copy of the order may be stale: charge only an order that is still awaiting payment, was started with
+// Square, is the one this session is paying for, and still owes exactly the amount the session remembers.
+$orderId = (int)($_SESSION['pending_order_id'] ?? 0);
+$order = $orderId > 0 ? (new CheckoutOrder($this->osmium->dataSource, 'shop_orders'))->getById($orderId) : null;
+
+$orderUsable = $order !== null
+    && CheckoutOrderPaymentState::of((string)$order['status']) === CheckoutOrderPaymentState::AWAITING
+    && ($order['payment_provider'] ?? '') === SquarePaymentProvider::ID
+    && \hash_equals((string)$order['order_ref'], (string)($pending['ref'] ?? ''))
+    && SquareClient::toMinorUnits((float)$order['total_inc_tax']) === (int)$pending['amount_minor']
+    && (string)$order['currency'] === (string)$pending['currency'];
+if (!$orderUsable) $this->osmium->jsonError('We could not find your order. Please contact us before trying again.');
 
 $alreadyCharged = !empty($pending['payment_id']);
 if ($alreadyCharged) $this->osmium->jsonSuccess(['success' => true, 'order_ref' => $pending['ref']]); // A double-click must not charge twice
