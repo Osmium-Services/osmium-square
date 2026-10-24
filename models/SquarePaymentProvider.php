@@ -40,6 +40,11 @@ class SquarePaymentProvider
                 'chargeUrl' => '/api/checkout-square-charge',
             ],
             'settingsRoute' => 'settings/square/',
+            'logo' => '/assets/services/square/logo.png', // Shown next to the order in admin
+            'paymentUrl' => [ // The logo links here; {capture_ref} is Square's payment id
+                'test' => 'https://app.squareupsandbox.com/dashboard/sales/transactions/{capture_ref}',
+                'live' => 'https://app.squareup.com/dashboard/sales/transactions/{capture_ref}',
+            ],
         ];
     }
 
