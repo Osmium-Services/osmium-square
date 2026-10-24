@@ -9,10 +9,10 @@ use Osmium\Services\Square\Models\SquareClient;
 use Osmium\Services\Square\Models\SquareDeclinedException;
 use Osmium\Services\Square\Models\SquarePaymentProvider;
 
-require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
-require_once __DIR__ . '/../../../modules/checkout/services/CheckoutOrderPaymentState.php';
-require_once __DIR__ . '/../../../modules/checkout/models/CheckoutModel.php';
-require_once __DIR__ . '/../../../modules/checkout/models/CheckoutOrder.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopPaymentException.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutOrderPaymentState.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutModel.php';
+require_once __DIR__ . '/../../osmium-shop/models/CheckoutOrder.php';
 
 /**
  * Square charge route.

@@ -6,7 +6,7 @@ namespace Osmium\Services\Square\Models;
 
 use Osmium\Modules\Checkout\Services\ShopPaymentException;
 
-require_once __DIR__ . '/../../../modules/checkout/services/ShopPaymentException.php';
+require_once __DIR__ . '/../../osmium-shop/models/ShopPaymentException.php';
 
 /**
  * The card itself was refused (declined, bad CVV, expired). Unlike every other
