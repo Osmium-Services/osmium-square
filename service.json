@@ -1,9 +1,10 @@
 {
     "id": "square",
     "name": "Square",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "description": "Takes card payments at checkout through Square (Web Payments SDK card form on your own page, charged server-side with the CreatePayment API). Appears as a payment provider in Settings > Payments",
     "category": "payments",
+    "website": "https://squareup.com",
     "author": {
         "name": "Gavin Cox"
     },
