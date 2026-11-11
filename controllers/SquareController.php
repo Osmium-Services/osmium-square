@@ -56,6 +56,8 @@ class SquareController extends AdminController
         }
 
         $this->data['admin']['square'] = [
+            'supportedMethods' => SquareConfig::SUPPORTED_METHODS,
+            'acceptedMethods' => SquareConfig::acceptedMethods(),
             'enabled' => (bool) $config['enabled'],
             'mode' => $config['mode'],
             'fields' => $fields,
@@ -87,6 +89,7 @@ class SquareController extends AdminController
 
         $mode = \trim((string) ($_POST['mode'] ?? 'test'));
         $values['enabled'] = isset($_POST['enabled']);
+        $values['acceptedMethods'] = \array_values(\array_intersect(\array_keys(SquareConfig::SUPPORTED_METHODS), (array) ($_POST['accepted_methods'] ?? [])));
         $values['mode'] = $mode === 'live' ? 'live' : 'test';
 
         SquareConfig::save($values);

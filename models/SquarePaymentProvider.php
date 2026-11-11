@@ -39,6 +39,7 @@ class SquarePaymentProvider
                 'sdkUrl' => $client->sdkUrl(),
                 'chargeUrl' => '/api/checkout-square-charge',
             ],
+            'methods' => SquareConfig::acceptedMethods(), // Shown as payment badges by the theme
             'settingsRoute' => 'settings/square/',
             'logo' => '/assets/services/square/logo.png', // Shown next to the order in admin
             'paymentUrl' => [ // The logo links here; {capture_ref} is Square's payment id

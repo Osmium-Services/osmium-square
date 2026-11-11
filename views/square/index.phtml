@@ -57,6 +57,17 @@
                         </div>
                     <?php endforeach; ?>
 
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Accepted payment types</label>
+                        <?php foreach ($admin['square']['supportedMethods'] as $methodId => $methodLabel): ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="method-<?= $methodId ?>" name="accepted_methods[]" value="<?= $methodId ?>" <?= \in_array($methodId, $admin['square']['acceptedMethods'], true) ? 'checked' : '' ?>>
+                                <label class="form-check-label" for="method-<?= $methodId ?>"><?= \htmlspecialchars($methodLabel) ?></label>
+                            </div>
+                        <?php endforeach; ?>
+                        <div class="form-text">Shown as payment badges on the site. Square's card form takes these cards.</div>
+                    </div>
+
                     <div class="form-text">Find all of these in the Square Developer Console: the Application ID and Access Token on the application's Credentials page, the Location ID under Locations. Sandbox and Production values are separate and not interchangeable.</div>
                 </div>
             </div>
