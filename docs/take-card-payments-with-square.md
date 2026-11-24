@@ -1,6 +1,7 @@
 ---
 title: Take card payments with Square
 tags: square, card payments, checkout, sandbox, production, location id
+page: admin/settings/square
 ---
 
 **Square** takes card payments on your own checkout page. The card form stays on your site, and customers are never sent to Square.
